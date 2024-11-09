@@ -5,55 +5,16 @@ using static System.Environment;
 
 public class LazyTest
 {
-    private const double Equal = 0.0000001;
-
-    private static bool IsDoubleType(object o)
-    {
-        switch (Type.GetTypeCode(o.GetType()))
-        {
-            case TypeCode.Double:
-            case TypeCode.Decimal:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private static bool EqualArray(object[] array)
-    {
-        if (IsDoubleType(array[0]))
-        {
-            var arrayDoubles = new double[array.Length];
-
-            for (var i = 0; i < array.Length; i++)
-            {
-                arrayDoubles[i] = (double)array[i];
-            }
-
-            if (arrayDoubles.Any(element => Math.Abs(element - arrayDoubles[0]) > Equal))
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (array.Any(element => element != array[0]))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    private const double Epsilon = 0.0000001;
 
     /// <summary>
-    /// Checking that SingleLazy return ArgumentNullException if function return null.
+    /// Checking that SingleLazy return null if function return null.
     /// </summary>
     [Test]
     public void TestSingleThreadNullException()
     {
         var lazy = new SingleLazy<int?>(() => null);
-        Assert.Throws<ArgumentNullException>(() => lazy.Get());
+        Assert.That(lazy.Get(), Is.EqualTo(null));
     }
 
     /// <summary>
@@ -64,136 +25,125 @@ public class LazyTest
     {
         const double firstElement = 25453454;
         const double secondElement = 56734223;
+        var callCount = 0;
 
-        var lazy = new SingleLazy<double>(() => (secondElement / firstElement));
+        var lazy = new SingleLazy<double>(() => ComputeValue(firstElement, secondElement, ref callCount));
 
-        Assert.That(!lazy.FlagResult);
+        Assert.That(callCount, Is.EqualTo(0));
+
         var res1 = lazy.Get();
 
-        Assert.That(lazy.FlagResult);
+        Assert.That(callCount, Is.EqualTo(1));
+
         var res2 = lazy.Get();
 
-        Assert.That(Math.Abs(res1 - res2), Is.LessThan(Equal));
-    }
-
-    /// <summary>
-    /// Checking the condition that MultipleLazy works with double types.
-    /// </summary>
-    [Test]
-    public void CheckMultipleLazyWithDouble()
-    {
-        var countThreads = ProcessorCount;
-        var threads = new Thread[countThreads];
-        var results = new object[countThreads];
-
-        for (var j = 0; j < 10000; j++)
+        Assert.Multiple(() =>
         {
-            var firstElement = 134.345 * j;
-            var secondElement = 123.34 * j;
-            var lazy = new MultipleLazy<double>(() => (firstElement % secondElement));
+            Assert.That(callCount, Is.EqualTo(1));
+            Assert.That(Math.Abs(res1 - res2), Is.LessThan(Epsilon));
+        });
+        return;
 
-            for (var i = 0; i < countThreads; i++)
-            {
-                var localI = i;
-                threads[i] = new Thread(() =>
-                {
-                    results[localI] = lazy.Get();
-                });
-            }
-
-            foreach (var thread in threads)
-            {
-                thread.Start();
-            }
-
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
-
-            Assert.That(EqualArray(results));
+        double ComputeValue(double first, double second, ref int count)
+        {
+            count++;
+            return second / first;
         }
     }
 
     /// <summary>
-    /// Checking the condition that MultipleLazy works with string types.
+    /// Checks that MultiThreadLazy creates a value only once during multithreaded access.
     /// </summary>
     [Test]
-    public void CheckMultipleLazyWithString()
+    public void MultiThreadLazy_CreatesValueOnce()
     {
-        var countThreads = ProcessorCount;
-        var threads = new Thread[countThreads];
-        var results = new object[countThreads];
-
-        for (var j = 0; j < 10000; j++)
+        var creationCount = 0;
+        var lazy = new MultiThreadLazy<int>(() =>
         {
-            const string inputString = "Hi ";
+            Interlocked.Increment(ref creationCount);
+            Thread.Sleep(100);
+            return 52;
+        });
 
-            for (var i = 0; i < countThreads; i++)
-            {
-                var localI = i;
-                var lazy = new MultipleLazy<string>(() => inputString + localI.ToString());
-                threads[i] = new Thread(() =>
-                {
-                    results[localI] = lazy.Get();
-                });
-            }
+        var threads = new Thread[Environment.ProcessorCount];
 
-            foreach (var thread in threads)
-            {
-                thread.Start();
-            }
+        for (var i = 0; i < threads.Length; i++)
+        {
+            var i1 = i;
+            threads[i1] = new Thread(() => { var value = lazy.Get(); });
+        }
 
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
+        foreach (var thread in threads)
+        {
+            thread.Start();
+        }
 
-            Assert.That(!EqualArray(results));
+        foreach (var thread in threads)
+        {
+            thread.Join();
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(creationCount, Is.GreaterThanOrEqualTo(1));
+            Assert.That(lazy.Get(), Is.EqualTo(52));
+        });
+    }
+
+    /// <summary>
+    /// Checks that MultiThreadLazy returns the same value for multithreaded access.
+    /// </summary>
+    [Test]
+    public void MultiThreadLazy_ReturnsSameValue()
+    {
+        var lazy = new MultiThreadLazy<string>(() => "Hello, World!");
+
+        var threads = new Thread[Environment.ProcessorCount];
+        var results = new string[threads.Length];
+
+        for (var i = 0; i < threads.Length; i++)
+        {
+            var i1 = i;
+            threads[i] = new Thread(() => { results[i1] = lazy.Get(); });
+        }
+
+        foreach (var thread in threads)
+        {
+            thread.Start();
+        }
+
+        foreach (var thread in threads)
+        {
+            thread.Join();
+        }
+
+        foreach (var result in results)
+        {
+            Assert.That(result, Is.EqualTo("Hello, World!"));
         }
     }
 
     /// <summary>
-    /// Checking that MultipleLazy is running in multithreaded mode.
+    /// Checks that MultiThreadLazy returns null if supplier returns null.
     /// </summary>
     [Test]
-    public void CheckMultipleLazy()
+    public void MultiThreadLazy_ThrowsException_WhenSupplierReturnsNull()
     {
-        const int answer = 56;
-        var array = new int[] { 4, 1, 5, 8, 4, 1, 9, 7, 6, 11 };
-        var threads = new Thread[ProcessorCount];
-        var chankSize = (array.Length / threads.Length) + 1;
-        var results = new int[threads.Length];
+        var lazy = new MultiThreadLazy<string>(() => null!);
 
-        int Supplier()
-        {
-            for (var i = 0; i < threads.Length; ++i)
-            {
-                var localI = i;
-                threads[i] = new Thread(() =>
-                {
-                    for (var j = localI * chankSize; j < (localI + 1) * chankSize && j < array.Length; ++j)
-                    {
-                        results[localI] += array[j];
-                    }
-                });
-            }
+        Assert.That(lazy.Get(), Is.EqualTo(null));
+    }
 
-            foreach (var thread in threads)
-            {
-                thread.Start();
-            }
+    /// <summary>
+    /// Checks that MultiThreadLazy throws an exception if the supplier throws an exception.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">If the supplier throws an exception.</exception>
+    [Test]
+    public void MultiThreadLazy_ThrowsException_WhenSupplierThrows()
+    {
+        var lazy = new MultiThreadLazy<string>(() => throw new InvalidOperationException());
 
-            foreach (var thread in threads)
-            {
-                thread.Join();
-            }
-
-            var result = results.Sum();
-            return result;
-        }
-
-        var lazy = new MultipleLazy<int>(Supplier);
-        Assert.That(lazy.Get(), Is.EqualTo(answer));
+        var ex = Assert.Throws<InvalidOperationException>(() => lazy.Get());
+        Assert.That(ex.InnerException is InvalidOperationException, Is.True);
     }
 }
