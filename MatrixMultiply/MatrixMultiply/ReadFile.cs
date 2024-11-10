@@ -10,20 +10,20 @@ using MatrixMultiply.Exceptions;
 public static class ReadFile
 {
     /// <summary>
-    /// Opening file and return matrix.
+    /// Opening file and return matrix asynchronously.
     /// </summary>
     /// <param name="path">The path to the matrix file.</param>
     /// <returns>A matrix in the form of a list of lists.</returns>
-    public static List<List<int>> ReadFileMatrix(string path)
+    public static async Task<List<List<int>>> ReadFileMatrixAsync(string path)
     {
         var lastCountRow = -1;
 
         var matrixList = new List<List<int>>();
         try
         {
-            foreach (var line in File.ReadLines(path))
+            await foreach (var line in File.ReadLinesAsync(path))
             {
-                var str = line.Split(' ');
+                var str = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 var currentRow = new List<int>();
 
                 foreach (var elementStr in str)
