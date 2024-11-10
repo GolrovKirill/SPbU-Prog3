@@ -12,7 +12,7 @@ List<double> yParallelTime = [];
 List<double> yStandardDeviation = [];
 List<double> yParallelStandardDeviation = [];
 Plot plt = new ();
-for (int i = 1; i <= 15; i++)
+for (int i = 1; i <= 50; i++)
 {
     var size = 10 * i;
     Create.CreateFile($"../../../../MatrixMultiply.Tests/Tests/{i}.txt", size, size);
