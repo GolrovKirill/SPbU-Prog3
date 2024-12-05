@@ -9,7 +9,7 @@ public class ReflectorTests
         var type = typeof(You<int>);
         var expectedFileName = $"{type.Name}.cs";
 
-        reflector.PrintStructure(type);
+        Reflector.PrintStructure(type);
 
         Assert.That(File.Exists(expectedFileName), Is.True);
 
@@ -33,7 +33,7 @@ public class ReflectorTests
         var firstClass = typeof(You<int>);
         var secondClass = typeof(Me<int>);
 
-        var (diffFields, diffMethods) = reflector.DiffClasses(firstClass, secondClass);
+        var (diffFields, diffMethods) = Reflector.DiffClasses(firstClass, secondClass);
 
         var diffFieldsList = diffFields.ToList();
         var diffMethodsList = diffMethods.ToList();
