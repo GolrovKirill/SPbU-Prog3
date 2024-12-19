@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KR2\KR2.csproj" />
+    <ProjectReference Include="..\KR3\KR3.csproj" />
   </ItemGroup>
 
 </Project>
