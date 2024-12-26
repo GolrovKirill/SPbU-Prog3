@@ -17,7 +17,7 @@ public class TestRunner
         private readonly ConcurrentBag<TestResult> testsResult = [];
 
         /// <summary>
-        /// Run tests for each assembly multi-threaded and print results.
+        /// Run tests for each assembly multithreaded and print results.
         /// </summary>
         /// <param name="path">Path to the directory with tests.</param>
         /// <returns>Result of tests.</returns>
@@ -38,9 +38,11 @@ public class TestRunner
         /// <param name="assembly">Assembly with tests.</param>
         private void ExecuteTests(Assembly assembly)
         {
+            var lockObject = new object();
+
             foreach (var type in assembly.GetTypes())
             {
-                var testMethods = type.GetMethods().Where(m => m.GetCustomAttribute<TestAttribute>() is not null).ToList();
+                var testMethods = type.GetMethods().Where(m => m.GetCustomAttribute<TestAttribute>() != null).ToList();
 
                 if (testMethods.Count != 0)
                 {
@@ -50,9 +52,12 @@ public class TestRunner
 
                     foreach (var method in testMethods)
                     {
-                        ExecuteBefore(instance);
-                        ExecuteTest(instance, method);
-                        ExecuteAfter(instance);
+                        lock (lockObject)
+                        {
+                            ExecuteBefore(instance);
+                            ExecuteTest(instance, method);
+                            ExecuteAfter(instance);
+                        }
                     }
 
                     ExecuteAfterClass(type);

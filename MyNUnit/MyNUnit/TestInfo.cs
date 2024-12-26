@@ -7,7 +7,7 @@ namespace MyNUnit;
 /// <summary>
 /// Class with information about run test.
 /// </summary>
-public class TestResult
+public record TestResult
 {
     /// <summary>
     /// Gets or sets name test.
