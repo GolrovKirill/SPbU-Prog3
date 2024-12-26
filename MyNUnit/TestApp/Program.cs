@@ -1,9 +1,13 @@
-﻿using Attributes;
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using Attributes;
 using MyNUnit;
- 
-public class SomeClass
+
+public class TestApp
 {
-    private int _value;
+    private int value;
 
     [BeforeClass]
     public static void BeforeClass()
@@ -15,7 +19,7 @@ public class SomeClass
     public void Before()
     {
         Console.WriteLine("Method before test");
-        _value = 5;
+        value = 5;
     }
 
     [After]
@@ -33,7 +37,7 @@ public class SomeClass
     [Test]
     public void BeforeMethodWasCalled()
     {
-        if (_value != 5)
+        if (value != 5)
         {
             throw new Exception("Before method wasn't called");
         }
@@ -42,7 +46,7 @@ public class SomeClass
     [Test]
     public void AssertWithTrueExpressionPassed()
     {
-        Assert.That(_value == 5);
+        Assert.That(value == 5);
     }
 
     [Test(typeof(InvalidOperationException))]

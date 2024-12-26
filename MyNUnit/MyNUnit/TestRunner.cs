@@ -1,23 +1,26 @@
-using Attributes;
-
+// <copyright file="TestRunner.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 namespace MyNUnit;
 
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Collections.Concurrent;
+using Attributes;
 
 /// <summary>
 /// Class that implements running tests.
 /// </summary>
 public class TestRunner
     {
-        private readonly ConcurrentBag<TestResult> _testsResult = [];
+        private readonly ConcurrentBag<TestResult> testsResult = [];
 
         /// <summary>
-        /// Run tests for each assemblies multi-threaded and print results.
+        /// Run tests for each assembly multi-threaded and print results.
         /// </summary>
         /// <param name="path">Path to the directory with tests.</param>
+        /// <returns>Result of tests.</returns>
         public ConcurrentBag<TestResult> RunTest(string path)
         {
             var assemblies = Directory.GetFiles(path, "*.dll").Select(Assembly.LoadFrom).ToList();
@@ -26,7 +29,7 @@ public class TestRunner
             Task.WaitAll(tasks);
 
             PrintResults();
-            return _testsResult;
+            return testsResult;
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ public class TestRunner
                 {
                     var instance = Activator.CreateInstance(type)!;
 
-                ExecuteBeforeClass(type);
+                    ExecuteBeforeClass(type);
 
                     foreach (var method in testMethods)
                     {
@@ -93,7 +96,7 @@ public class TestRunner
         /// <param name="instance">Instance of some class.</param>
         private static void ExecuteBefore(object instance)
         {
-            var beforeMethods = instance!.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            var beforeMethods = instance.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(m => m.GetCustomAttribute<BeforeAttribute>() is not null);
 
             foreach (var method in beforeMethods)
@@ -108,7 +111,7 @@ public class TestRunner
         /// <param name="instance">Instance of some class.</param>
         private static void ExecuteAfter(object instance)
         {
-            var afterMethods = instance!.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            var afterMethods = instance.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
                 .Where(m => m.GetCustomAttribute<AfterAttribute>() is not null);
 
             foreach (var method in afterMethods)
@@ -130,7 +133,7 @@ public class TestRunner
             {
                 result.Passed = true;
                 result.Message = $"Ignored: {testAttribute.Ignore}";
-                _testsResult.Add(result);
+                testsResult.Add(result);
             }
 
             var stopwatch = Stopwatch.StartNew();
@@ -165,19 +168,19 @@ public class TestRunner
             {
                 stopwatch.Stop();
                 result.Duration = stopwatch.Elapsed;
-                _testsResult.Add(result);
+                testsResult.Add(result);
             }
         }
 
         /// <summary>
         /// Method that print results of tests.
         /// </summary>
-        public void PrintResults()
+        private void PrintResults()
         {
             Console.WriteLine("======== Test Results ========");
-            foreach (var result in _testsResult)
+            foreach (var result in testsResult)
             {
-                Console.WriteLine($"{result.TestName}, {(result.Passed)}, {result.Duration.TotalMilliseconds}, {result.Message}");
+                Console.WriteLine($"{result.TestName}, {result.Passed}, {result.Duration.TotalMilliseconds}, {result.Message}");
             }
         }
     }
