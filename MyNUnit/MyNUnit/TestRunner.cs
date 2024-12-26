@@ -136,8 +136,8 @@ public class TestRunner
             var result = new TestResult { TestName = method.Name };
             if (testAttribute?.Ignore != null)
             {
-                result.Passed = true;
-                result.Message = $"Ignored: {testAttribute.Ignore}";
+                result = result with { Passed = true };
+                result = result with { Message = $"Ignored: {testAttribute.Ignore}" };
                 testsResult.Add(result);
             }
 
@@ -147,32 +147,32 @@ public class TestRunner
             {
                 method.Invoke(instance, null);
                 stopwatch.Stop();
-                result.Duration = stopwatch.Elapsed;
-                result.Passed = true;
-                result.Message = "Passed";
+                result = result with { Duration = stopwatch.Elapsed };
+                result = result with { Passed = true };
+                result = result with { Message = "Passed" };
             }
             catch (TargetInvocationException ex)
             {
                 if (testAttribute?.Expected is not null && ex.InnerException?.GetType() == testAttribute.Expected)
                 {
-                    result.Passed = true;
-                    result.Message = $"Passed with expected exception: {ex.InnerException.Message}";
+                    result = result with { Passed = true };
+                    result = result with { Message = $"Passed with expected exception: {ex.InnerException.Message}" };
                 }
                 else
                 {
-                    result.Passed = false;
-                    result.Message = $"Failed: {ex.InnerException?.Message}";
+                    result = result with { Passed = false };
+                    result = result with { Message = $"Failed: {ex.InnerException?.Message}" };
                 }
             }
             catch (Exception ex)
             {
-                result.Passed = false;
-                result.Message = $"Failed: {ex.Message}";
+                result = result with { Passed = false };
+                result = result with { Message = $"Failed: {ex.Message}" };
             }
             finally
             {
                 stopwatch.Stop();
-                result.Duration = stopwatch.Elapsed;
+                result = result with { Duration = stopwatch.Elapsed };
                 testsResult.Add(result);
             }
         }

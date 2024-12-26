@@ -1,4 +1,4 @@
-// <copyright file="TestInfo.cs" company="PlaceholderCompany">
+// <copyright file="TestResult.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
@@ -12,20 +12,20 @@ public record TestResult
     /// <summary>
     /// Gets or sets name test.
     /// </summary>
-    public string? TestName { get; set; }
+    public string? TestName { get; init; }
 
     /// <summary>
     /// Gets or sets a value indicating whether result test.
     /// </summary>
-    public bool Passed { get; set; }
+    public bool Passed { get; init; }
 
     /// <summary>
     /// Gets or sets the reason for the result.
     /// </summary>
-    public string? Message { get; set; }
+    public string? Message { get; init; }
 
     /// <summary>
     /// Gets or sets time work test.
     /// </summary>
-    public TimeSpan Duration { get; set; }
+    public TimeSpan Duration { get; init; }
 }
