@@ -30,10 +30,7 @@ public static class Multiplication
         {
             for (var j = 0; j < matrix2[0].Count; j++)
             {
-                for (var l = 0; l < matrix1[0].Count; l++)
-                {
-                    resultMatrix[i, j] += matrix1[i][l] * matrix2[l][j];
-                }
+                resultMatrix[i, j] = Enumerable.Range(0, matrix1[0].Count).Sum(l => matrix1[i][l] * matrix2[l][j]);
             }
         }
 
@@ -128,8 +125,5 @@ public static class Multiplication
         }
     }
 
-    private static bool CheckDimMatrix(List<List<int>> matrix1, List<List<int>> matrix2)
-    {
-        return matrix1[0].Count == matrix2.Count;
-    }
+    private static bool CheckDimMatrix(List<List<int>> matrix1, List<List<int>> matrix2) => matrix1[0].Count == matrix2.Count;
 }

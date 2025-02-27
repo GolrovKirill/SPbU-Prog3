@@ -3,6 +3,7 @@ namespace MatrixMultiply.Tests;
 using CreateMatrix;
 using MatrixMultiply;
 using MatrixMultiply.Exceptions;
+using PdfSharp.Drawing;
 
 /// <summary>
 /// Test class.
@@ -61,6 +62,16 @@ public class MultiplicationTest
         return true;
     }
 
+    private bool EqualsMatrices(int[,] matrix1, List<List<int>> matrix2)
+    {
+        return EqualsMatricesArrayAndList(matrix1, matrix2);
+    }
+
+    private bool EqualsMatrices(int[,] matrix1, int[,] matrix2)
+    {
+        return EqualsMatricesArray(matrix1, matrix2);
+    }
+
     /// <summary>
     /// Test create matrix.
     /// </summary>
@@ -75,7 +86,7 @@ public class MultiplicationTest
 
         Assert.That(!File.Exists(path));
 
-        Create.CreateFile(path, countRows, countColumns);
+        MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns);
 
         Assert.That(File.Exists(path));
     }
@@ -107,7 +118,7 @@ public class MultiplicationTest
         const int countColumns = 2;
         const string path = "../../../../MatrixMultiply.Tests/Tests/testCreate.txt";
 
-        Assert.Throws<ArgumentException>(() => Create.CreateFile(path, countRows, countColumns));
+        Assert.Throws<ArgumentException>(() => MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns));
     }
 
     /// <summary>
@@ -120,7 +131,7 @@ public class MultiplicationTest
         const int countColumns = 2;
         const string path = "../Incorrect Path/testCreate.txt";
 
-        Assert.Throws<IOException>(() => Create.CreateFile(path, countRows, countColumns));
+        Assert.Throws<IOException>(() => MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns));
     }
 
     /// <summary>
@@ -296,10 +307,10 @@ public class MultiplicationTest
 
         Assert.Multiple(() =>
         {
-            Assert.That(EqualsMatricesArray(matrixSingleRez1, matrixMultiRez1) &&
-                        EqualsMatricesArray(matrixSingleRez2, matrixMultiRez2));
-            Assert.That(EqualsMatricesArrayAndList(matrixSingleRez1, matrixResultMatrix1Matrix2) &&
-                        EqualsMatricesArrayAndList(matrixMultiRez2, matrixResultMatrix2Matrix1));
+            Assert.That(EqualsMatrices(matrixSingleRez1, matrixMultiRez1) &&
+                        EqualsMatrices(matrixSingleRez2, matrixMultiRez2));
+            Assert.That(EqualsMatrices(matrixSingleRez1, matrixResultMatrix1Matrix2) &&
+                        EqualsMatrices(matrixMultiRez2, matrixResultMatrix2Matrix1));
         });
 
         File.Delete(path1);

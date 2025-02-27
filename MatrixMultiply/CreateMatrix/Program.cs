@@ -5,5 +5,5 @@ using CreateMatrix;
 for (var i = 1; i < 51; i++)
 {
     var path = "../../../../MatrixMultiply.Tests/Tests/test" + i + ".txt";
-    Create.CreateFile(path, i + 1, i + 1);
+    MatrixCreator.CreateFileWithMatrix(path, i + 1, i + 1);
 }

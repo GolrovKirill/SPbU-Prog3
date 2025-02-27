@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using ScottPlot;
 using CreateMatrix;
 using MatrixMultiply;
@@ -15,7 +14,7 @@ Plot plt = new ();
 for (int i = 1; i <= 50; i++)
 {
     var size = 10 * i;
-    Create.CreateFile($"../../../../MatrixMultiply.Tests/Tests/{i}.txt", size, size);
+    MatrixCreator.CreateFileWithMatrix($"../../../../MatrixMultiply.Tests/Tests/{i}.txt", size, size);
     var matrix = ReadFile.ReadFileMatrixAsync($"../../../../MatrixMultiply.Tests/Tests/{i}.txt");
     var times = new double[n];
     var parallelTimes = new double[n];
