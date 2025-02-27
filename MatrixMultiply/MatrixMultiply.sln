@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixMultiply", "MatrixMultiply\MatrixMultiply.csproj", "{28845C76-F8B1-4CA0-A27A-8F9153874DE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateMatrix", "CreateMatrix\CreateMatrix.csproj", "{3FBECD07-0A98-47E1-BD14-2244DEA30990}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixMultiply.Tests", "MatrixMultiply.Tests\MatrixMultiply.Tests.csproj", "{518DBC92-00E7-411C-928E-E70D8C466968}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{28845C76-F8B1-4CA0-A27A-8F9153874DE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28845C76-F8B1-4CA0-A27A-8F9153874DE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28845C76-F8B1-4CA0-A27A-8F9153874DE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28845C76-F8B1-4CA0-A27A-8F9153874DE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FBECD07-0A98-47E1-BD14-2244DEA30990}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FBECD07-0A98-47E1-BD14-2244DEA30990}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FBECD07-0A98-47E1-BD14-2244DEA30990}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FBECD07-0A98-47E1-BD14-2244DEA30990}.Release|Any CPU.Build.0 = Release|Any CPU
+		{518DBC92-00E7-411C-928E-E70D8C466968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{518DBC92-00E7-411C-928E-E70D8C466968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{518DBC92-00E7-411C-928E-E70D8C466968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{518DBC92-00E7-411C-928E-E70D8C466968}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
