@@ -1,3 +1,9 @@
+// <copyright file="MyThreadPoolTests.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
+// </copyright>
+
 namespace MyThreadPool.Tests;
 
 using System.Globalization;
@@ -11,7 +17,7 @@ public class MyThreadPoolTests
     /// Verify that an exception is thrown when an invalid number of threads is supplied to the pool.
     /// </summary>
     [Test]
-    public void ThrowsArgumentOutOfRangeException_WhenCreatingPoolWithInvalidThreadCount()
+    public void ThrowsArgumentOutOfRangeExceptionWhenCreatingPoolWithInvalidThreadCount()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
@@ -29,7 +35,7 @@ public class MyThreadPoolTests
     [TestCase(2, 2)]
     [TestCase(4, 8)]
     [TestCase(8, 4)]
-    public void ExecutesTasks_CorrectlyInThreadPool(int countThreads, int countTasks)
+    public void ExecutesTasksCorrectlyInThreadPool(int countThreads, int countTasks)
     {
         var tasks = new IMyTask<int>[countTasks];
         var pool = new MyThreadPool(countThreads);
@@ -62,7 +68,7 @@ public class MyThreadPoolTests
     [TestCase(2, 2, 1)]
     [TestCase(5, 10, 5)]
     [TestCase(10, 5, 5)]
-    public void HandlesContinuationTasks_Properly(int countThreads, int countTasks, int countContinue)
+    public void HandlesContinuationTasksProperly(int countThreads, int countTasks, int countContinue)
     {
         var tasks = new IMyTask<int>[countTasks];
         var pool = new MyThreadPool(countThreads);
@@ -87,7 +93,7 @@ public class MyThreadPoolTests
     /// Test the thread pool functionality with tasks returning different types.
     /// </summary>
     [Test]
-    public void ExecutesTasks_WithDifferentReturnTypesSuccessfully()
+    public void ExecutesTasksWithDifferentReturnTypesSuccessfully()
     {
         const int countThreads = 2;
         var pool = new MyThreadPool(countThreads);
@@ -118,7 +124,7 @@ public class MyThreadPoolTests
     /// Test sequential execution with multiple Continuation Tasks.
     /// </summary>
     [Test]
-    public void SupportsMultipleContinuationTasks_InSequence()
+    public void SupportsMultipleContinuationTasksInSequence()
     {
         const int countThreads = 2;
         var pool = new MyThreadPool(countThreads);
@@ -141,7 +147,7 @@ public class MyThreadPoolTests
     /// </summary>
     /// <exception cref="DivideByZeroException">This exception is expected for testing purposes.</exception>
     [Test]
-    public void ThrowsAggregateException_WhenTaskThrowsException()
+    public void ThrowsAggregateExceptionWhenTaskThrowsException()
     {
         const int countThreads = 4;
         var pool = new MyThreadPool(countThreads);
@@ -160,7 +166,7 @@ public class MyThreadPoolTests
     /// Test the behavior of the thread pool's shutdown method.
     /// </summary>
     [Test]
-    public void SuccessfullyShutsDown_WhenActiveTasksExist()
+    public void SuccessfullyShutsDownWhenActiveTasksExist()
     {
         const int countThreads = 1;
         var pool = new MyThreadPool(countThreads);
@@ -182,7 +188,7 @@ public class MyThreadPoolTests
     /// Test the exception handling when continuing tasks after shutdown.
     /// </summary>
     [Test]
-    public void ThrowsTaskCanceledException_WhenContinuingAfterShutdown()
+    public void ThrowsTaskCanceledExceptionWhenContinuingAfterShutdown()
     {
         const int countThreads = 4;
         var pool = new MyThreadPool(countThreads);

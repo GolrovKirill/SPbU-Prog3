@@ -1,3 +1,9 @@
+// <copyright file="MyThreadPool.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
+// </copyright>
+
 namespace MyThreadPool;
 
 /// <summary>
@@ -22,7 +28,7 @@ public class MyThreadPool
         threads = new Thread[countThreads];
         for (var i = 0; i < countThreads; i++)
         {
-            threads[i] = new Thread(Worker);
+            threads[i] = new Thread(ExecuteTasks);
             threads[i].Start();
         }
     }
@@ -55,7 +61,7 @@ public class MyThreadPool
         }
     }
 
-    private void Worker()
+    private void ExecuteTasks()
     {
         while (!clt.IsCancellationRequested || queue.Count > 0)
         {
