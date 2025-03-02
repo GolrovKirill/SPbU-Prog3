@@ -7,13 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lazy", "Lazy\Lazy.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lazy.Tests", "Lazy.Tests\Lazy.Tests.csproj", "{A805470F-D9E3-4B76-A9FC-BAA0F1D4331D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2A9DF1B7-EB57-4D56-BDB5-94191D39B8B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -24,5 +26,8 @@ Global
 		{A805470F-D9E3-4B76-A9FC-BAA0F1D4331D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A805470F-D9E3-4B76-A9FC-BAA0F1D4331D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A805470F-D9E3-4B76-A9FC-BAA0F1D4331D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

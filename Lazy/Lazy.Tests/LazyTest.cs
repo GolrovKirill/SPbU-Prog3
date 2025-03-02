@@ -1,3 +1,9 @@
+// <copyright file="LazyTest.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
+// </copyright>
+
 namespace Lazy.Tests;
 
 using System.Threading;
@@ -91,15 +97,15 @@ public class LazyTest
     }
 
     /// <summary>
-    /// Checks that MultiThreadLazy returns the same value for multithreaded access.
+    /// Checks that MultiThreadLazy returns the same instance for multithreaded access.
     /// </summary>
     [Test]
-    public void MultiThreadLazy_ReturnsSameValue()
+    public void MultiThreadLazy_ReturnsSameInstance()
     {
-        var lazy = new MultiThreadLazy<string>(() => "Hello, World!");
+        var lazy = new MultiThreadLazy<object>(() => new object());
 
         var threads = new Thread[Environment.ProcessorCount];
-        var results = new string[threads.Length];
+        var results = new object[threads.Length];
 
         for (var i = 0; i < threads.Length; i++)
         {
@@ -117,9 +123,10 @@ public class LazyTest
             thread.Join();
         }
 
+        var firstResult = results[0];
         foreach (var result in results)
         {
-            Assert.That(result, Is.EqualTo("Hello, World!"));
+            Assert.That(result, Is.SameAs(firstResult));
         }
     }
 
