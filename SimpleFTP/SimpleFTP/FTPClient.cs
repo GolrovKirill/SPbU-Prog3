@@ -1,4 +1,9 @@
-﻿namespace SimpleFTP;
+﻿// <copyright file="FTPClient.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
+// </copyright>
+namespace SimpleFTP;
 
 using System.Net.Sockets;
 
@@ -17,8 +22,13 @@ public class FTPClient(string serverAddress, int serverPort)
     /// </summary>
     /// <param name="directoryPath">Path.</param>
     /// <returns>List of contents if a directory.</returns>
-    public async Task<(string path, bool isDirectory)[]> List(string directoryPath)
+    public async Task<(string Path, bool IsDirectory)[]> List(string directoryPath)
     {
+        if (File.Exists(directoryPath))
+        {
+            throw new InvalidOperationException();
+        }
+
         using var tcpClient = new TcpClient(host, port);
         var networkStream = tcpClient.GetStream();
         await using var streamWriter = new StreamWriter(networkStream);
@@ -39,10 +49,10 @@ public class FTPClient(string serverAddress, int serverPort)
         await using var streamWriter = new StreamWriter(networkStream);
         await streamWriter.WriteLineAsync($"2 {filePath}");
         await streamWriter.FlushAsync();
-        return ReceiveFileResponse(networkStream);
+        return await ReceiveFileResponse(networkStream);
     }
 
-    private static async Task<(string path, bool isDirectory)[]> ReceiveListResponse(Stream stream)
+    private static async Task<(string Path, bool IsDirectory)[]> ReceiveListResponse(Stream stream)
     {
         using var streamReader = new StreamReader(stream);
         var responseData = await streamReader.ReadToEndAsync();
@@ -52,7 +62,7 @@ public class FTPClient(string serverAddress, int serverPort)
             throw new DirectoryNotFoundException();
         }
 
-        var responses = new (string path, bool isDirectory)[int.Parse(splitData[0])];
+        var responses = new (string Path, bool IsDirectory)[int.Parse(splitData[0])];
         for (int i = 0; i < responses.Length; i++)
         {
             responses[i] = (splitData[(i * 2) + 1], bool.Parse(splitData[(i * 2) + 2]));
@@ -61,21 +71,30 @@ public class FTPClient(string serverAddress, int serverPort)
         return responses;
     }
 
-    private static byte[] ReceiveFileResponse(Stream stream)
+    private static async Task<byte[]> ReceiveFileResponse(Stream stream)
     {
-        using var binaryReader = new BinaryReader(stream);
-        var fileSize = binaryReader.ReadInt64();
+        using var memoryStream = new MemoryStream();
+        using var streamReader = new StreamReader(stream);
+
+        byte[] sizeBuffer = new byte[8];
+        await stream.ReadExactlyAsync(sizeBuffer);
+        long fileSize = BitConverter.ToInt64(sizeBuffer, 0);
         if (fileSize == -1)
         {
             throw new DirectoryNotFoundException();
         }
 
-        var fileData = new byte[fileSize];
-        for (long i = 0; i < fileSize; i++)
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
         {
-            fileData[i] = binaryReader.ReadByte();
+            memoryStream.Write(buffer, 0, bytesRead);
+            if (memoryStream.Length >= fileSize)
+            {
+                break;
+            }
         }
 
-        return fileData;
+        return memoryStream.ToArray();
     }
 }

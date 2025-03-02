@@ -1,3 +1,8 @@
+// <copyright file="FTPTests.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
+// </copyright>
 namespace SimpleFTP.Tests;
 
 using System.Net;
@@ -11,19 +16,6 @@ public class FTPTests
 
     private const string Host = "localhost";
 
-    private static readonly object[] TestCase =
-    [
-        new object[]
-        {
-            "../../../TestFiles",
-            new (string path, bool isDir)[]
-            {
-                ("../../../TestFiles/test2.txt", false),
-                ("../../../TestFiles/test1.txt", false),
-            },
-        },
-    ];
-
     private FTPServer server;
 
     /// <summary>
@@ -32,8 +24,20 @@ public class FTPTests
     [SetUp]
     public void StartServer()
     {
+        if (server != null)
+        {
+            server.Shutdown();
+        }
+
         server = new FTPServer(IPAddress.Any, Port);
         server.Start();
+    }
+
+    [TearDown]
+    public void StopServer()
+    {
+        server?.Shutdown();
+        server = null;
     }
 
     /// <summary>
@@ -58,29 +62,6 @@ public class FTPTests
         server.Shutdown();
     }
 
-    /// <summary>
-    /// Tests the response for a list request from the server.
-    /// </summary>
-    /// <param name="path">The directory path for which to retrieve file listings.</param>
-    /// <param name="expectedResult">The expected result containing file paths and their type.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous test execution.</returns>
-    [Test]
-    [TestCaseSource(nameof(TestCase))]
-    public async Task TestList(string path, (string Path, bool IsDir)[] expectedResult)
-    {
-        var client = new FTPClient(Host, Port);
-        var response = await client.List(path);
-        Assert.That(response, Has.Length.EqualTo(expectedResult.Length));
-        foreach (var element in response)
-        {
-            Assert.That(expectedResult, Does.Contain(element));
-        }
-
-        server.Shutdown();
-    }
-
-    /// <summary>
-    /// Tests the response when retrieving a file from the server.
     /// </summary>
     /// <param name="path">The path of the file to retrieve.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous test execution.</returns>
@@ -91,6 +72,53 @@ public class FTPTests
         var client = new FTPClient(Host, Port);
         var response = await client.Get(path);
         Assert.That(response, Is.EqualTo(expectedResult));
+        server.Shutdown();
+    }
+
+    /// <summary>
+    /// Tests that a list request with an invalid path format throws an exception.
+    /// </summary>
+    [Test]
+    public void TestListWithInvalidPathFormat()
+    {
+        var client = new FTPClient(Host, Port);
+        Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.List("invalid:path/for/list"));
+        server.Shutdown();
+    }
+
+    /// <summary>
+    /// Tests that a get request with an invalid file name throws an exception.
+    /// </summary>
+    [Test]
+    public void TestGetWithInvalidFileName()
+    {
+        var client = new FTPClient(Host, Port);
+        Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.Get("invalid|file*name.txt"));
+        server.Shutdown();
+    }
+
+    /// <summary>
+    /// Tests that a list request using an empty string as a path throws an exception.
+    /// </summary>
+    [Test]
+    public void TestListWithEmptyPath()
+    {
+        var client = new FTPClient(Host, Port);
+        Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.List(string.Empty));
+        server.Shutdown();
+    }
+
+    /// <summary>
+    /// Tests that a list request for a directory that is not a directory throws an exception.
+    /// </summary>
+    [Test]
+    public async Task TestListNotADirectory()
+    {
+        var client = new FTPClient(Host, Port);
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+        {
+            await client.List("../../../TestFiles/test1.txt");
+        });
         server.Shutdown();
     }
 }

@@ -1,3 +1,8 @@
+// <copyright file="FTPServer.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
+// </copyright>
 namespace SimpleFTP;
 
 using System.Net;
@@ -12,7 +17,7 @@ using System.Text;
 public class FTPServer(IPAddress ipAddress, int portNumber)
 {
     private readonly TcpListener tcpListener = new(ipAddress, portNumber);
-    private readonly CancellationTokenSource clt = new();
+    private readonly CancellationTokenSource cancellationTokenSource = new();
 
     /// <summary>
     /// Starts the server.
@@ -28,18 +33,18 @@ public class FTPServer(IPAddress ipAddress, int portNumber)
     /// </summary>
     public void Shutdown()
     {
-        clt.Cancel();
+        cancellationTokenSource.Cancel();
         tcpListener.Stop();
     }
 
     private async void RunAsync()
     {
-        List<Task> clientTasks = new();
-        while (!clt.Token.IsCancellationRequested)
+        List<Task> clientTasks = [];
+        while (!cancellationTokenSource.Token.IsCancellationRequested)
         {
             try
             {
-                var clientSocket = await tcpListener.AcceptSocketAsync(clt.Token);
+                var clientSocket = await tcpListener.AcceptSocketAsync(cancellationTokenSource.Token);
                 var task = Task.Run(async () =>
                 {
                     await using var networkStream = new NetworkStream(clientSocket);
@@ -84,14 +89,14 @@ public class FTPServer(IPAddress ipAddress, int portNumber)
                 await SendDirectoryList(components[1], stream);
                 break;
             case "2":
-                SendFile(components[1], stream);
+                await SendFile(components[1], stream);
                 break;
             default:
                 throw new ArgumentException();
         }
     }
 
-    private static async Task SendDirectoryList(string directoryPath, Stream stream)
+    private async Task SendDirectoryList(string directoryPath, Stream stream)
     {
         await using var streamWriter = new StreamWriter(stream);
         if (!Directory.Exists(directoryPath))
@@ -115,26 +120,23 @@ public class FTPServer(IPAddress ipAddress, int portNumber)
         await streamWriter.FlushAsync();
     }
 
-    private static void SendFile(string filePath, Stream stream)
+    private async Task SendFile(string filePath, Stream stream)
     {
-        using var binaryWriter = new BinaryWriter(stream);
         if (!File.Exists(filePath))
         {
-            binaryWriter.Write(-1L);
-            binaryWriter.Flush();
+            await stream.WriteAsync(BitConverter.GetBytes(-1L), 0, sizeof(long));
             return;
         }
 
-        using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-        binaryWriter.Write(fileStream.Length);
+        await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+        long fileLength = fileStream.Length;
+        await stream.WriteAsync(BitConverter.GetBytes(fileLength), 0, sizeof(long));
 
         var buffer = new byte[4096];
         int bytesRead;
-        while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+        while ((bytesRead = await fileStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
         {
-            binaryWriter.Write(buffer, 0, bytesRead);
+            await stream.WriteAsync(buffer, 0, bytesRead);
         }
-
-        binaryWriter.Flush();
     }
 }
