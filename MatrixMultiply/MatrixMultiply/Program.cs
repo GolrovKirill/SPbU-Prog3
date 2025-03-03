@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
-using ScottPlot;
-using CreateMatrix;
 using MatrixMultiply;
+using ScottPlot;
 
 var stopwatch = new Stopwatch();
 var n = 100;
@@ -10,11 +9,11 @@ List<double> yTime = [];
 List<double> yParallelTime = [];
 List<double> yStandardDeviation = [];
 List<double> yParallelStandardDeviation = [];
-Plot plt = new ();
+Plot plt = new();
 for (int i = 1; i <= 50; i++)
 {
     var size = 10 * i;
-    MatrixCreator.CreateFileWithMatrix($"../../../../MatrixMultiply.Tests/Tests/{i}.txt", size, size);
+    MatrixCreator.MatrixCreator.CreateFileWithMatrix($"../../../../MatrixMultiply.Tests/Tests/{i}.txt", size, size);
     var matrix = ReadFile.ReadFileMatrixAsync($"../../../../MatrixMultiply.Tests/Tests/{i}.txt");
     var times = new double[n];
     var parallelTimes = new double[n];

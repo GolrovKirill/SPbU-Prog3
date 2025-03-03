@@ -3,28 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{28845C76-F8B1-4CA0-A27A-8F9153874DE3}|MatrixMultiply\\MatrixMultiply.csproj|c:\\users\\think\\documents\\\u0443\u0447\u0451\u0431\u0430\\\u043F\u0440\u043E\u0433\u0430\\spbu-prog3\\matrixmultiply\\matrixmultiply\\multiplication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28845C76-F8B1-4CA0-A27A-8F9153874DE3}|MatrixMultiply\\MatrixMultiply.csproj|solutionrelative:matrixmultiply\\multiplication.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28845C76-F8B1-4CA0-A27A-8F9153874DE3}|MatrixMultiply\\MatrixMultiply.csproj|c:\\users\\think\\documents\\\u0443\u0447\u0451\u0431\u0430\\\u043F\u0440\u043E\u0433\u0430\\spbu-prog3\\matrixmultiply\\matrixmultiply\\readfile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28845C76-F8B1-4CA0-A27A-8F9153874DE3}|MatrixMultiply\\MatrixMultiply.csproj|solutionrelative:matrixmultiply\\readfile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{28845C76-F8B1-4CA0-A27A-8F9153874DE3}|MatrixMultiply\\MatrixMultiply.csproj|c:\\users\\think\\documents\\\u0443\u0447\u0451\u0431\u0430\\\u043F\u0440\u043E\u0433\u0430\\spbu-prog3\\matrixmultiply\\matrixmultiply\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{28845C76-F8B1-4CA0-A27A-8F9153874DE3}|MatrixMultiply\\MatrixMultiply.csproj|solutionrelative:matrixmultiply\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518DBC92-00E7-411C-928E-E70D8C466968}|MatrixMultiply.Tests\\MatrixMultiply.Tests.csproj|c:\\users\\think\\documents\\\u0443\u0447\u0451\u0431\u0430\\\u043F\u0440\u043E\u0433\u0430\\spbu-prog3\\matrixmultiply\\matrixmultiply.tests\\multiplicationtest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{518DBC92-00E7-411C-928E-E70D8C466968}|MatrixMultiply.Tests\\MatrixMultiply.Tests.csproj|solutionrelative:matrixmultiply.tests\\multiplicationtest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3FBECD07-0A98-47E1-BD14-2244DEA30990}|CreateMatrix\\CreateMatrix.csproj|c:\\users\\think\\documents\\\u0443\u0447\u0451\u0431\u0430\\\u043F\u0440\u043E\u0433\u0430\\spbu-prog3\\matrixmultiply\\creatematrix\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3FBECD07-0A98-47E1-BD14-2244DEA30990}|CreateMatrix\\CreateMatrix.csproj|solutionrelative:creatematrix\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3FBECD07-0A98-47E1-BD14-2244DEA30990}|CreateMatrix\\CreateMatrix.csproj|c:\\users\\think\\documents\\\u0443\u0447\u0451\u0431\u0430\\\u043F\u0440\u043E\u0433\u0430\\spbu-prog3\\matrixmultiply\\creatematrix\\matrixcreator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3FBECD07-0A98-47E1-BD14-2244DEA30990}|CreateMatrix\\CreateMatrix.csproj|solutionrelative:creatematrix\\matrixcreator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{49736B40-E234-4F15-986C-CCD5EFBC985F}|MatrixCreator\\MatrixCreator.csproj|c:\\users\\think\\documents\\\u0443\u0447\u0451\u0431\u0430\\\u043F\u0440\u043E\u0433\u0430\\spbu-prog3\\matrixmultiply\\matrixcreator\\matrixcreator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49736B40-E234-4F15-986C-CCD5EFBC985F}|MatrixCreator\\MatrixCreator.csproj|solutionrelative:matrixcreator\\matrixcreator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,79 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Multiplication.cs",
-              "DocumentMoniker": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply\\Multiplication.cs",
-              "RelativeDocumentMoniker": "MatrixMultiply\\Multiplication.cs",
-              "ToolTip": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply\\Multiplication.cs",
-              "RelativeToolTip": "MatrixMultiply\\Multiplication.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAowH8AAAB+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-27T12:17:03.219Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ReadFile.cs",
-              "DocumentMoniker": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply\\ReadFile.cs",
-              "RelativeDocumentMoniker": "MatrixMultiply\\ReadFile.cs",
-              "ToolTip": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply\\ReadFile.cs",
-              "RelativeToolTip": "MatrixMultiply\\ReadFile.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAA4wAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-27T12:16:58.579Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply\\Program.cs",
-              "RelativeDocumentMoniker": "MatrixMultiply\\Program.cs",
-              "ToolTip": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply\\Program.cs",
-              "RelativeToolTip": "MatrixMultiply\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-27T12:16:37.767Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MultiplicationTest.cs",
-              "DocumentMoniker": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply.Tests\\MultiplicationTest.cs",
-              "RelativeDocumentMoniker": "MatrixMultiply.Tests\\MultiplicationTest.cs",
-              "ToolTip": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixMultiply.Tests\\MultiplicationTest.cs",
-              "RelativeToolTip": "MatrixMultiply.Tests\\MultiplicationTest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADgBAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-27T10:46:50.743Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\CreateMatrix\\Program.cs",
-              "RelativeDocumentMoniker": "CreateMatrix\\Program.cs",
-              "ToolTip": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\CreateMatrix\\Program.cs",
-              "RelativeToolTip": "CreateMatrix\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-27T10:46:04.851Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
               "Title": "MatrixCreator.cs",
-              "DocumentMoniker": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\CreateMatrix\\MatrixCreator.cs",
-              "RelativeDocumentMoniker": "CreateMatrix\\MatrixCreator.cs",
-              "ToolTip": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\CreateMatrix\\MatrixCreator.cs",
-              "RelativeToolTip": "CreateMatrix\\MatrixCreator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAfAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixCreator\\MatrixCreator.cs",
+              "RelativeDocumentMoniker": "MatrixCreator\\MatrixCreator.cs",
+              "ToolTip": "C:\\Users\\Think\\Documents\\\u0423\u0447\u0451\u0431\u0430\\\u041F\u0440\u043E\u0433\u0430\\SPbU-Prog3\\MatrixMultiply\\MatrixCreator\\MatrixCreator.cs*",
+              "RelativeToolTip": "MatrixCreator\\MatrixCreator.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-27T10:23:05.9Z",
+              "WhenOpened": "2025-03-03T08:13:26.561Z",
               "EditorCaption": ""
             }
           ]

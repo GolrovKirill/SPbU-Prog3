@@ -1,6 +1,10 @@
+// <copyright file="MultiplicationTest.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
+// </copyright>
 namespace MatrixMultiply.Tests;
 
-using CreateMatrix;
 using MatrixMultiply;
 using MatrixMultiply.Exceptions;
 using PdfSharp.Drawing;
@@ -86,7 +90,7 @@ public class MultiplicationTest
 
         Assert.That(!File.Exists(path));
 
-        MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns);
+        MatrixCreator.MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns);
 
         Assert.That(File.Exists(path));
     }
@@ -118,7 +122,7 @@ public class MultiplicationTest
         const int countColumns = 2;
         const string path = "../../../../MatrixMultiply.Tests/Tests/testCreate.txt";
 
-        Assert.Throws<ArgumentException>(() => MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns));
+        Assert.Throws<ArgumentException>(() => MatrixCreator.MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns));
     }
 
     /// <summary>
@@ -131,7 +135,7 @@ public class MultiplicationTest
         const int countColumns = 2;
         const string path = "../Incorrect Path/testCreate.txt";
 
-        Assert.Throws<IOException>(() => MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns));
+        Assert.Throws<IOException>(() => MatrixCreator.MatrixCreator.CreateFileWithMatrix(path, countRows, countColumns));
     }
 
     /// <summary>

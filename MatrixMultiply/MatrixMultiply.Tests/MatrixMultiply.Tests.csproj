@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MatrixMultiply\MatrixMultiply.csproj" />
-    <ProjectReference Include="..\CreateMatrix\CreateMatrix.csproj" />
+    <ProjectReference Include="..\MatrixCreator\MatrixCreator.csproj" />
   </ItemGroup>
 
 </Project>
