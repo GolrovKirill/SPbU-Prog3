@@ -1,49 +1,147 @@
-// <copyright file="MyNUnitTests.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+// <copyright file="MyNUnitTests.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
 // </copyright>
+namespace MyNUnitTests;
 
-namespace MyNUnit.Tests;
-
+using Attributes;
 using MyNUnit;
+using Assert = NUnit.Framework.Assert;
 
-public class Tests
+[TestFixture]
+public class MyNUnitTests
 {
-    private readonly Dictionary<string, (bool, double, string)> expectedResult = new()
-    {
-        { "TestFallAfterAssert", (false, 0.3 , "Failed: Exception of type 'MyNUnit.AssertFailException' was thrown.") },
-        { "TestFalledWithException", (false, 0.2, "Failed: This test should fall") },
-        { "IgnoredTestPassed", (false, 0.2, "Failed: This test should be ignored") },
-        { "ExpectedExceptionPassed", (true, 2.5, "Passed with expected exception: Operation is not valid due to the current state of the object.") },
-        { "AssertWithTrueExpressionPassed", (true, 0.2, "Passed") },
-        { "BeforeMethodWasCalled", (true, 0.2, "Passed") },
-    };
+    private const string TestProjectPath = @"../../../../TestApp/bin";
+    private MyNUnit testRunner;
 
-    /// <summary>
-    /// Test run tests by path in the directory.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-    [Test]
-    public Task TestOfTests_PathToDirectory()
+    [SetUp]
+    public void InitializeTestRunner()
     {
-        var runner = new TestRunner();
-        var result = runner.RunTest("../../../../TestApp//bin/Debug/net9.0");
+        testRunner = new MyNUnit();
+    }
 
-        foreach (var testResult in result)
+    [TearDown]
+    public void CleanupTestRunner()
+    {
+        testRunner.Dispose();
+    }
+
+    [NUnit.Framework.Test]
+    public async Task VerifyPassingTests()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
+        Assert.That(testResults, Is.Not.Null);
+
+        Assert.That(testResults, Is.Not.Empty);
+
+        var testClass = testResults.FirstOrDefault(r => r.ClassName == "TestApp");
+        Assert.That(testClass, Is.Not.Null);
+
+        var testMethod = testClass.TestResults.FirstOrDefault(m => m.TestName == "Test1");
+
+        Assert.Multiple(() =>
         {
-            Assert.That(testResult.TestName != null);
+            Assert.That(testMethod, Is.Not.Null);
+            Assert.That(testMethod.IsPassed, Is.True);
+            Assert.That(testMethod.ExceptionMessage, Is.Null);
+            Assert.That(testMethod.IgnoreMessage, Is.Null);
+        });
+    }
 
-            if (testResult.TestName == null)
-            {
-                continue;
-            }
+    [NUnit.Framework.Test]
+    public async Task VerifyIgnoredTest()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
 
-            var expected = expectedResult[testResult.TestName];
+        var testClass = testResults.FirstOrDefault(r => r.ClassName == "TestApp");
+        var testMethod = testClass.TestResults.FirstOrDefault(m => m.TestName == "IgnoredTest");
 
-            Assert.That(testResult.Passed == expected.Item1);
-            Assert.That(Math.Abs(testResult.Duration.TotalSeconds - (expected.Item2 / 1000)) <= 1);
-            Assert.That(testResult.Message == expected.Item3);
-        }
+        Assert.That(testMethod, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(testMethod.IsPassed, Is.False);
+            Assert.That(testMethod.IgnoreMessage, Is.EqualTo("This test is ignored"));
+        });
+    }
 
-        return Task.CompletedTask;
+    [NUnit.Framework.Test]
+    public async Task VerifyExpectedExceptions()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
+
+        var testClass = testResults.FirstOrDefault(r => r.ClassName == "TestApp");
+
+        var testMethod = testClass.TestResults.FirstOrDefault(t => t.TestName == "ThrowsExpectedException");
+        Assert.That(testMethod, Is.Not.Null);
+        Assert.That(testMethod.IsPassed, Is.True);
+    }
+
+    [NUnit.Framework.Test]
+    public async Task VerifyFailingTests()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
+
+        var testClass = testResults.FirstOrDefault(r => r.ClassName == "TestApp");
+        var testMethod = testClass.TestResults.FirstOrDefault(m => m.TestName == "FailedTest");
+
+        Assert.That(testMethod, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(testMethod.IsPassed, Is.False);
+            Assert.That(testMethod.ExceptionType, Is.EqualTo(typeof(AssertFailException)));
+        });
+    }
+
+    [NUnit.Framework.Test]
+    public async Task VerifyUnexpectedException()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
+
+        var testClass = testResults.FirstOrDefault(r => r.ClassName == "TestApp");
+        var testMethod = testClass.TestResults.FirstOrDefault(m => m.TestName == "ThrowsUnexpectedException");
+
+        Assert.That(testMethod, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(testMethod.IsPassed, Is.False);
+            Assert.That(testMethod.ExceptionType, Is.EqualTo(typeof(ArgumentException)));
+        });
+    }
+
+    [NUnit.Framework.Test]
+    public async Task VerifyMultipleTestClasses()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
+        Assert.That(testResults, Is.Not.Null);
+
+        var testClasses = testResults.Where(r => r.ClassName == "TestApp" || r.ClassName == "AnotherTestClass").ToList();
+        Assert.That(testClasses, Has.Count.EqualTo(2));
+    }
+
+    [NUnit.Framework.Test]
+    public async Task VerifyMixedPassFailTests()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
+        var testClass = testResults.FirstOrDefault(r => r.ClassName == "TestApp");
+
+        var passingTest = testClass.TestResults.FirstOrDefault(m => m.TestName == "Test1");
+        var failingTest = testClass.TestResults.FirstOrDefault(m => m.TestName == "FailedTest");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(passingTest.IsPassed, Is.True);
+            Assert.That(failingTest.IsPassed, Is.False);
+        });
+    }
+
+    [NUnit.Framework.Test]
+    public async Task VerifyEmptyTestClass()
+    {
+        var testResults = await testRunner.ExecuteTestsAsync(TestProjectPath);
+        var testClass = testResults.FirstOrDefault(r => r.ClassName == "EmptyTestClass");
+
+        Assert.That(testClass, Is.Not.Null);
+        Assert.That(testClass.TestResults, Is.Empty);
     }
 }

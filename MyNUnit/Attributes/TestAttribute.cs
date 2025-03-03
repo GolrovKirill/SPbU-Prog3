@@ -1,43 +1,32 @@
-﻿// <copyright file="TestAttribute.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TestAttribute.cs" company="Gorlov Kirill">
+// Copyright (c) Gorlov Kirill. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the repository root for license information.
+// https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
 // </copyright>
-
 namespace Attributes;
 
 /// <summary>
 /// Class that implements Test attribute.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="TestAttribute"/> class.
+/// </remarks>
+/// <param name="expectedException">The type of the expected exception. Default is null.</param>
+/// <param name="ignoreMessage">The message that will mark the test as ignored. Default is an empty string.</param>
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-public class TestAttribute : Attribute
-{
-    /// <summary>
-    /// Gets expected test.
-    /// </summary>
-    public Type? Expected { get; }
+public class TestAttribute(Type? expectedException = null, string? ignoreMessage = null) : Attribute
+{ /// <summary>
+  /// Gets the type of the expected exception that the test should throw.
+  /// </summary>
+    public Type? ExpectedException { get; } = expectedException;
 
     /// <summary>
-    /// Gets ignore test.
+    /// Gets the message that explains why the test is ignored.
     /// </summary>
-    public string? Ignore { get; }
+    public string? IgnoreMessage { get; } = ignoreMessage;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TestAttribute"/> class.
+    /// An indicator that the test is being ignored.
     /// </summary>
-    /// <param name="expected">Expected attribute.</param>
-    /// <param name="ignore">Ignore attribute.</param>
-    public TestAttribute(Type? expected = null, string? ignore = null)
-    {
-        Expected = expected;
-        Ignore = ignore;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TestAttribute"/> class.
-    /// </summary>
-    /// <param name="ignore">Ignore attribute.</param>
-    public TestAttribute(string ignore)
-    {
-        Expected = null;
-        Ignore = ignore;
-    }
+    public bool IsIgnore => !string.IsNullOrEmpty(IgnoreMessage);
 }

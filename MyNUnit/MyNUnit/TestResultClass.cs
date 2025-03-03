@@ -5,4 +5,4 @@
 // </copyright>
 namespace MyNUnit;
 
-public record TestResult(string TestName, bool IsPassed, Type? ExceptionType, string? ExceptionMessage, string? IgnoreMessage, TimeSpan Time);
+public record TestResultClass(string ClassName, List<TestResult> TestResults);

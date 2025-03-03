@@ -1,17 +1,17 @@
-﻿// <copyright file="Program.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-using MyNUnit;
-
-if (args.Length != 1)
+﻿if (args.Length != 1)
 {
-    Console.WriteLine("Incorrect input. Enter the path to the directory.");
-    return 1;
+    Console.WriteLine("Usage: MyNUnit <path-to-tests>");
+    return;
 }
 
 var path = args[0];
+var runner = new MyNUnit.MyNUnit();
 
-var runner = new TestRunner();
-runner.RunTest(path);
-return 0;
+if (!Directory.Exists(path))
+{
+    Console.WriteLine("Directory doesn't exist: " + path);
+    return;
+}
+
+var result = await runner.ExecuteTestsAsync(path);
+MyNUnit.MyNUnit.DisplayTestResults(result);
