@@ -37,66 +37,7 @@ public class FTPServer(IPAddress ipAddress, int portNumber)
         tcpListener.Stop();
     }
 
-    private async void RunAsync()
-    {
-        List<Task> clientTasks = [];
-        while (!cancellationTokenSource.Token.IsCancellationRequested)
-        {
-            try
-            {
-                var clientSocket = await tcpListener.AcceptSocketAsync(cancellationTokenSource.Token);
-                var task = Task.Run(async () =>
-                {
-                    await using var networkStream = new NetworkStream(clientSocket);
-                    using var streamReader = new StreamReader(networkStream);
-                    var requestLine = await streamReader.ReadLineAsync();
-                    if (requestLine == null)
-                    {
-                        return;
-                    }
-
-                    try
-                    {
-                        await HandleRequest(requestLine, networkStream);
-                    }
-                    finally
-                    {
-                        clientSocket.Close();
-                    }
-                });
-                clientTasks.Add(task);
-            }
-            catch (OperationCanceledException)
-            {
-                break;
-            }
-        }
-
-        await Task.WhenAll(clientTasks);
-    }
-
-    private async Task HandleRequest(string requestLine, Stream stream)
-    {
-        var components = requestLine.Split(' ');
-        if (components.Length != 2)
-        {
-            return;
-        }
-
-        switch (components[0])
-        {
-            case "1":
-                await SendDirectoryList(components[1], stream);
-                break;
-            case "2":
-                await SendFile(components[1], stream);
-                break;
-            default:
-                throw new ArgumentException();
-        }
-    }
-
-    private async Task SendDirectoryList(string directoryPath, Stream stream)
+    private static async Task SendDirectoryList(string directoryPath, Stream stream)
     {
         await using var streamWriter = new StreamWriter(stream);
         if (!Directory.Exists(directoryPath))
@@ -120,23 +61,82 @@ public class FTPServer(IPAddress ipAddress, int portNumber)
         await streamWriter.FlushAsync();
     }
 
-    private async Task SendFile(string filePath, Stream stream)
+    private static async Task HandleRequest(string requestLine, Stream stream, ArgumentException argumentException)
+    {
+        var components = requestLine.Split(' ');
+        if (components.Length != 2)
+        {
+            return;
+        }
+
+        switch (components[0])
+        {
+            case "1":
+                await SendDirectoryList(components[1], stream);
+                break;
+            case "2":
+                await SendFile(components[1], stream);
+                break;
+            default:
+                throw argumentException;
+        }
+    }
+
+    private static async Task SendFile(string filePath, Stream stream)
     {
         if (!File.Exists(filePath))
         {
-            await stream.WriteAsync(BitConverter.GetBytes(-1L), 0, sizeof(long));
+            await stream.WriteAsync(BitConverter.GetBytes(-1L).AsMemory(0, sizeof(long)));
             return;
         }
 
         await using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
         long fileLength = fileStream.Length;
-        await stream.WriteAsync(BitConverter.GetBytes(fileLength), 0, sizeof(long));
+        await stream.WriteAsync(BitConverter.GetBytes(fileLength).AsMemory(0, sizeof(long)));
 
         var buffer = new byte[4096];
         int bytesRead;
-        while ((bytesRead = await fileStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        while ((bytesRead = await fileStream.ReadAsync(buffer)) > 0)
         {
-            await stream.WriteAsync(buffer, 0, bytesRead);
+            await stream.WriteAsync(buffer.AsMemory(0, bytesRead));
         }
+    }
+
+    private async void RunAsync()
+    {
+        List<Task> clientTasks = [];
+        while (!cancellationTokenSource.Token.IsCancellationRequested)
+        {
+            try
+            {
+                var clientSocket = await tcpListener.AcceptSocketAsync(cancellationTokenSource.Token);
+                var task = Task.Run(async () =>
+                {
+                    await using var networkStream = new NetworkStream(clientSocket);
+                    using var streamReader = new StreamReader(networkStream);
+                    var requestLine = await streamReader.ReadLineAsync();
+                    if (requestLine == null)
+                    {
+                        return;
+                    }
+
+                    try
+                    {
+                        await HandleRequest(requestLine, networkStream, new());
+                    }
+                    finally
+                    {
+                        clientSocket.Close();
+                    }
+                });
+                clientTasks.Add(task);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+        }
+
+        await Task.WhenAll(clientTasks);
     }
 }

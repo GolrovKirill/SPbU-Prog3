@@ -86,7 +86,7 @@ public class FTPClient(string serverAddress, int serverPort)
 
         byte[] buffer = new byte[8192];
         int bytesRead;
-        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+        while ((bytesRead = await stream.ReadAsync(buffer)) > 0)
         {
             memoryStream.Write(buffer, 0, bytesRead);
             if (memoryStream.Length >= fileSize)

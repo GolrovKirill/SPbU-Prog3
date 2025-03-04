@@ -16,7 +16,7 @@ public class FTPTests
 
     private const string Host = "localhost";
 
-    private FTPServer server;
+    private FTPServer? server;
 
     /// <summary>
     /// Initializes and starts the FTP server before each test.
@@ -24,10 +24,7 @@ public class FTPTests
     [SetUp]
     public void StartServer()
     {
-        if (server != null)
-        {
-            server.Shutdown();
-        }
+        server?.Shutdown();
 
         server = new FTPServer(IPAddress.Any, Port);
         server.Start();
@@ -48,7 +45,6 @@ public class FTPTests
     {
         var client = new FTPClient(Host, Port);
         Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.List("../../../Test"));
-        server.Shutdown();
     }
 
     /// <summary>
@@ -59,7 +55,6 @@ public class FTPTests
     {
         var client = new FTPClient(Host, Port);
         Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.Get("../../../TestFiles/test0.txt"));
-        server.Shutdown();
     }
 
     /// </summary>
@@ -72,7 +67,6 @@ public class FTPTests
         var client = new FTPClient(Host, Port);
         var response = await client.Get(path);
         Assert.That(response, Is.EqualTo(expectedResult));
-        server.Shutdown();
     }
 
     /// <summary>
@@ -83,7 +77,6 @@ public class FTPTests
     {
         var client = new FTPClient(Host, Port);
         Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.List("invalid:path/for/list"));
-        server.Shutdown();
     }
 
     /// <summary>
@@ -94,7 +87,6 @@ public class FTPTests
     {
         var client = new FTPClient(Host, Port);
         Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.Get("invalid|file*name.txt"));
-        server.Shutdown();
     }
 
     /// <summary>
@@ -105,20 +97,18 @@ public class FTPTests
     {
         var client = new FTPClient(Host, Port);
         Assert.ThrowsAsync<DirectoryNotFoundException>(async () => await client.List(string.Empty));
-        server.Shutdown();
     }
 
     /// <summary>
     /// Tests that a list request for a directory that is not a directory throws an exception.
     /// </summary>
     [Test]
-    public async Task TestListNotADirectory()
+    public void TestListNotADirectory()
     {
         var client = new FTPClient(Host, Port);
         var exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
             await client.List("../../../TestFiles/test1.txt");
         });
-        server.Shutdown();
     }
 }
