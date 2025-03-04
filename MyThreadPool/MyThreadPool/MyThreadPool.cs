@@ -3,7 +3,6 @@
 // Licensed under the MIT License. See LICENSE in the repository root for license information.
 // https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
 // </copyright>
-
 namespace MyThreadPool;
 
 /// <summary>
@@ -25,11 +24,11 @@ public class MyThreadPool
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(countThreads);
 
-        threads = new Thread[countThreads];
+        this.threads = new Thread[countThreads];
         for (var i = 0; i < countThreads; i++)
         {
-            threads[i] = new Thread(ExecuteTasks);
-            threads[i].Start();
+            this.threads[i] = new Thread(ExecuteTasks);
+            this.threads[i].Start();
         }
     }
 
@@ -41,7 +40,7 @@ public class MyThreadPool
     /// <returns>Task result.</returns>
     public IMyTask<TResult> Submit<TResult>(Func<TResult> func)
     {
-        return new MyTask<TResult>(func, clt.Token, queue);
+        return new MyTask<TResult>(func, this.clt.Token, this.queue);
     }
 
     /// <summary>
@@ -49,21 +48,24 @@ public class MyThreadPool
     /// </summary>
     public void Shutdown()
     {
-        clt.Cancel();
+        this.clt.Cancel();
         lock (queue)
         {
-            Monitor.PulseAll(queue);
+            Monitor.PulseAll(this.queue);
         }
 
-        foreach (var thread in threads)
+        foreach (var thread in this.threads)
         {
-            thread.Join();
+            if (thread.IsAlive)
+            {
+                thread.Join();
+            }
         }
     }
 
     private void ExecuteTasks()
     {
-        while (!clt.IsCancellationRequested || queue.Count > 0)
+        while (true)
         {
             Action task;
             lock (queue)
@@ -75,10 +77,15 @@ public class MyThreadPool
                         return;
                     }
 
-                    Monitor.Wait(queue);
+                    Monitor.Wait(this.queue);
                 }
 
-                task = queue.Dequeue();
+                task = this.queue.Dequeue();
+            }
+
+            if (clt.IsCancellationRequested)
+            {
+                return;
             }
 
             task();

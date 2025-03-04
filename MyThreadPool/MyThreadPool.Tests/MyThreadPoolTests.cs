@@ -102,7 +102,7 @@ public class MyThreadPoolTests
         var task3 = pool.Submit(() => 1 != 2);
         var task4 = pool.Submit(() =>
         {
-            float[] arr = { 1.2f, 3.4f, 5.2f };
+            float[] arr = [1.2f, 3.4f, 5.2f];
             return arr.Sum();
         }).ContinueWith((x) => x * 10);
 
@@ -130,7 +130,7 @@ public class MyThreadPoolTests
         var pool = new MyThreadPool(countThreads);
         var task = pool.Submit(() =>
         {
-            float[] arr = { 1.2f, 3.4f, 5.2f };
+            float[] arr = [1.2f, 3.4f, 5.2f];
             return arr.Sum();
         }).ContinueWith((x) => x * 10).ContinueWith((x) => x.ToString(CultureInfo.InvariantCulture));
 

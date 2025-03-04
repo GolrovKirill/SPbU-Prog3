@@ -3,7 +3,6 @@
 // Licensed under the MIT License. See LICENSE in the repository root for license information.
 // https://github.com/GolrovKirill/SPbU-Prog3/blob/main/LICENSE
 // </copyright>
-
 namespace MyThreadPool;
 
 /// <summary>
@@ -13,9 +12,9 @@ namespace MyThreadPool;
 public class MyTask<TResult> : IMyTask<TResult>
 {
     private readonly Func<TResult> function;
-    private readonly object lockObject = new ();
+    private readonly object lockObject = new();
     private readonly Queue<Action> queue;
-    private readonly CancellationToken clt;
+    private readonly CancellationToken cancellationToken;
     private Exception? exception;
     private TResult? funcResult;
 
@@ -25,14 +24,14 @@ public class MyTask<TResult> : IMyTask<TResult>
     /// <param name="func">Task.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <param name="queue">Task queue.</param>
-    public MyTask(Func<TResult> func, CancellationToken cancellationToken, Queue<Action> queue)
+    public MyTask(Func<TResult> func, CancellationToken clt, Queue<Action> queue)
     {
-        function = func;
-        clt = cancellationToken;
+        this.function = func;
+        this.cancellationToken = clt;
         this.queue = queue;
         lock (queue)
         {
-            this.queue.Enqueue(Execute);
+            this.queue.Enqueue(this.Execute);
             Monitor.Pulse(queue);
         }
     }
@@ -51,8 +50,9 @@ public class MyTask<TResult> : IMyTask<TResult>
             {
                 while (!IsCompleted && exception is null)
                 {
-                    if (clt.IsCancellationRequested)
+                    if (cancellationToken.IsCancellationRequested)
                     {
+                        this.IsCompleted = true;
                         throw new TaskCanceledException();
                     }
 
@@ -64,7 +64,7 @@ public class MyTask<TResult> : IMyTask<TResult>
                     throw new AggregateException(exception);
                 }
 
-                return funcResult;
+                return this.funcResult;
             }
         }
     }
@@ -72,7 +72,7 @@ public class MyTask<TResult> : IMyTask<TResult>
     /// <inheritdoc/>
     IMyTask<TNewResult> IMyTask<TResult>.ContinueWith<TNewResult>(Func<TResult, TNewResult> func)
     {
-        return new MyTask<TNewResult>(() => func(Result), clt, queue);
+        return new MyTask<TNewResult>(() => func(this.Result), this.cancellationToken, this.queue);
     }
 
     private void Execute()
@@ -84,20 +84,21 @@ public class MyTask<TResult> : IMyTask<TResult>
                 return;
             }
 
-            if (clt.IsCancellationRequested)
+            if (cancellationToken.IsCancellationRequested)
             {
+                this.IsCompleted = true;
                 Monitor.PulseAll(lockObject);
                 return;
             }
 
             try
             {
-                funcResult = function();
-                IsCompleted = true;
+                this.funcResult = this.function();
+                this.IsCompleted = true;
             }
             catch (Exception ex)
             {
-                exception = ex;
+                this.exception = ex;
             }
             finally
             {
