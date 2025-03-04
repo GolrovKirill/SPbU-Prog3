@@ -46,22 +46,22 @@ public class MyTask<TResult> : IMyTask<TResult>
     {
         get
         {
-            lock (lockObject)
+            lock (this.lockObject)
             {
-                while (!IsCompleted && exception is null)
+                while (!this.IsCompleted && this.exception is null)
                 {
-                    if (cancellationToken.IsCancellationRequested)
+                    if (this.cancellationToken.IsCancellationRequested)
                     {
                         this.IsCompleted = true;
                         throw new TaskCanceledException();
                     }
 
-                    Monitor.Wait(lockObject);
+                    Monitor.Wait(this.lockObject);
                 }
 
-                if (exception is not null)
+                if (this.exception is not null)
                 {
-                    throw new AggregateException(exception);
+                    throw new AggregateException(this.exception);
                 }
 
                 return this.funcResult;
@@ -72,22 +72,24 @@ public class MyTask<TResult> : IMyTask<TResult>
     /// <inheritdoc/>
     IMyTask<TNewResult> IMyTask<TResult>.ContinueWith<TNewResult>(Func<TResult, TNewResult> func)
     {
+#pragma warning disable CS8604 // ¬озможно, аргумент-ссылка, допускающий значение NULL.
         return new MyTask<TNewResult>(() => func(this.Result), this.cancellationToken, this.queue);
+#pragma warning restore CS8604 // ¬озможно, аргумент-ссылка, допускающий значение NULL.
     }
 
     private void Execute()
     {
-        lock (lockObject)
+        lock (this.lockObject)
         {
-            if (IsCompleted)
+            if (this.IsCompleted)
             {
                 return;
             }
 
-            if (cancellationToken.IsCancellationRequested)
+            if (this.cancellationToken.IsCancellationRequested)
             {
                 this.IsCompleted = true;
-                Monitor.PulseAll(lockObject);
+                Monitor.PulseAll(this.lockObject);
                 return;
             }
 
@@ -102,7 +104,7 @@ public class MyTask<TResult> : IMyTask<TResult>
             }
             finally
             {
-                Monitor.PulseAll(lockObject);
+                Monitor.PulseAll(this.lockObject);
             }
         }
     }

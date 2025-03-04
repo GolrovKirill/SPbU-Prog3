@@ -10,7 +10,7 @@ namespace MyThreadPool;
 /// </summary>
 public class MyThreadPool
 {
-    private readonly CancellationTokenSource clt = new();
+    private readonly CancellationTokenSource cancellationTokenSource = new();
 
     private readonly Queue<Action> queue = new();
 
@@ -27,7 +27,7 @@ public class MyThreadPool
         this.threads = new Thread[countThreads];
         for (var i = 0; i < countThreads; i++)
         {
-            this.threads[i] = new Thread(ExecuteTasks);
+            this.threads[i] = new Thread(this.ExecuteTasks);
             this.threads[i].Start();
         }
     }
@@ -40,7 +40,7 @@ public class MyThreadPool
     /// <returns>Task result.</returns>
     public IMyTask<TResult> Submit<TResult>(Func<TResult> func)
     {
-        return new MyTask<TResult>(func, this.clt.Token, this.queue);
+        return new MyTask<TResult>(func, this.cancellationTokenSource.Token, this.queue);
     }
 
     /// <summary>
@@ -48,8 +48,8 @@ public class MyThreadPool
     /// </summary>
     public void Shutdown()
     {
-        this.clt.Cancel();
-        lock (queue)
+        this.cancellationTokenSource.Cancel();
+        lock (this.queue)
         {
             Monitor.PulseAll(this.queue);
         }
@@ -68,11 +68,11 @@ public class MyThreadPool
         while (true)
         {
             Action task;
-            lock (queue)
+            lock (this.queue)
             {
-                while (queue.Count == 0)
+                while (this.queue.Count == 0)
                 {
-                    if (clt.IsCancellationRequested)
+                    if (this.cancellationTokenSource.IsCancellationRequested)
                     {
                         return;
                     }
@@ -83,7 +83,7 @@ public class MyThreadPool
                 task = this.queue.Dequeue();
             }
 
-            if (clt.IsCancellationRequested)
+            if (this.cancellationTokenSource.IsCancellationRequested)
             {
                 return;
             }
