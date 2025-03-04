@@ -1,11 +1,11 @@
-﻿#nullable disable
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
 
 namespace MyNUnitWeb.Migrations
 {
-    using Microsoft.EntityFrameworkCore.Migrations;
-
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class TestRuns : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

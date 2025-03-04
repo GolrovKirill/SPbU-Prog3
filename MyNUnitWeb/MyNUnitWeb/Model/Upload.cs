@@ -10,9 +10,9 @@ namespace MyNUnitWeb.Model;
 /// </summary>
 public class Upload
 {
-    public List<IFormFile> Files { get; set; }
+    public required List<IFormFile> Files { get; set; }
 
-    public string UploadMessage { get; set; }
+    public required string UploadMessage { get; set; }
 
-    public List<string> UploadFiles { get; set; }
+    public required List<string> UploadFiles { get; set; }
 }

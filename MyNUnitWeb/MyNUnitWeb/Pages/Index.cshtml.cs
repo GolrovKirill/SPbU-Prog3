@@ -13,19 +13,15 @@ using MyNUnitWeb.Model;
 using MyNUnitWeb.Services;
 
 /// <summary>
-/// Represents the main page model for the MyNUnitWeb application. 
+/// Represents the main page model for the MyNUnitWeb application.
 /// Handles file uploads, test execution.
 /// </summary>
 public class IndexModel : PageModel
 {
+    private const string ClientIdSessionKey = "ClientId";
+    private readonly WebData context;
     private readonly UploadSite uploadService;
     private readonly TestSite testRunnerService;
-
-    public Upload Upload { get; set; }
-
-    public TestRun? TestRun { get; set; }
-
-    private const string ClientIdSessionKey = "ClientId";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IndexModel"/> class.
@@ -35,23 +31,30 @@ public class IndexModel : PageModel
     /// <param name="testRunnerService">Service for running tests.</param>
     public IndexModel(WebData context, UploadSite uploadService, TestSite testRunnerService)
     {
+        this.context = context;
         this.uploadService = uploadService;
         this.testRunnerService = testRunnerService;
 
-        Upload = new Upload
+        this.Upload = new Upload
         {
-            UploadFiles = new List<string>(),
+            Files = [],
+            UploadMessage = string.Empty,
+            UploadFiles = [],
         };
     }
+
+    public Upload Upload { get; set; }
+
+    public TestRun? TestRun { get; set; }
 
     /// <summary>
     /// Handles GET requests to load the page and initialize uploaded file data.
     /// </summary>
     public void OnGet()
     {
-        var clientId = GetClientId(HttpContext.Session, ClientIdSessionKey);
+        var clientId = GetClientId(this.HttpContext.Session, ClientIdSessionKey);
 
-        Upload.UploadFiles = uploadService.LoadUploadedFiles(clientId);
+        this.Upload.UploadFiles = this.uploadService.LoadUploadedFiles(clientId);
     }
 
     /// <summary>
@@ -59,11 +62,11 @@ public class IndexModel : PageModel
     /// </summary>
     public async Task<IActionResult> OnPostUploadAsync(List<IFormFile>? files)
     {
-        var clientId = GetClientId(HttpContext.Session, ClientIdSessionKey);
+        var clientId = GetClientId(this.HttpContext.Session, ClientIdSessionKey);
 
-        Upload.UploadMessage = await (uploadService.Upload(files, clientId));
-        Upload.UploadFiles = uploadService.LoadUploadedFiles(clientId);
-        return Page();
+        this.Upload.UploadMessage = await this.uploadService.Upload(files, clientId);
+        this.Upload.UploadFiles = this.uploadService.LoadUploadedFiles(clientId);
+        return this.Page();
     }
 
     /// <summary>
@@ -71,14 +74,14 @@ public class IndexModel : PageModel
     /// </summary>
     public async Task<IActionResult> OnPostRunTestsAsync()
     {
-        var clientId = GetClientId(HttpContext.Session, ClientIdSessionKey);
+        var clientId = GetClientId(this.HttpContext.Session, ClientIdSessionKey);
 
-        TestRun = await testRunnerService.RunTests(clientId);
-        clientId = RefreshClientId(HttpContext.Session, ClientIdSessionKey);
-        HttpContext.Session.SetString(ClientIdSessionKey, clientId);
+        this.TestRun = await this.testRunnerService.RunTests(clientId);
+        clientId = RefreshClientId(this.HttpContext.Session, ClientIdSessionKey);
+        this.HttpContext.Session.SetString(ClientIdSessionKey, clientId);
 
-        Upload.UploadFiles = uploadService.LoadUploadedFiles(clientId);
-        return Page();
+        this.Upload.UploadFiles = this.uploadService.LoadUploadedFiles(clientId);
+        return this.Page();
     }
 
     /// <summary>

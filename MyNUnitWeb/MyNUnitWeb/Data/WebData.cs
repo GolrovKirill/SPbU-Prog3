@@ -11,8 +11,13 @@ using MyNUnitWeb.Model;
 /// <summary>
 /// Manages the database context for the application.
 /// </summary>
-public class WebData(DbContextOptions<WebData> options) : DbContext(options)
+public class WebData : DbContext
 {
+    public WebData(DbContextOptions<WebData> options)
+        : base(options)
+    {
+    }
+
     public DbSet<TestRun> TestRuns { get; set; }
 
     public DbSet<TestClassModel> TestClasses { get; set; }

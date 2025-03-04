@@ -10,6 +10,11 @@ namespace MyNUnitWeb.Model;
 /// </summary>
 public class TestRun
 {
+    public TestRun()
+    {
+        this.TestClasses = [];
+    }
+
     public int Id { get; set; }
 
     public int TotalTests { get; set; }
@@ -21,42 +26,4 @@ public class TestRun
     public int IgnoredTests { get; set; }
 
     public List<TestClassModel> TestClasses { get; set; }
-}
-
-/// <summary>
-/// Represents a test class within a test run.
-/// </summary>
-public class TestClassModel
-{
-    public int Id { get; set; }
-
-    public int TestRunModelId { get; set; }
-
-    public TestRun TestRun { get; set; }
-
-    public string Name { get; set; }
-
-    public List<TestDetailModel> TestDetails { get; set; }
-}
-
-/// <summary>
-/// Represents a single test case within a test class.
-/// </summary>
-public class TestDetailModel
-{
-    public int Id { get; set; }
-
-    public int TestClassModelId { get; set; }
-
-    public TestClassModel TestClass { get; set; }
-
-    public string TestName { get; set; }
-
-    public string Status { get; set; }
-
-    public long ExecutionTime { get; set; }
-
-    public string? ErrorMessage { get; set; }
-
-    public string? IgnoreMessage { get; set; }
 }

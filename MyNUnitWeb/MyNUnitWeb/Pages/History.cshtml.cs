@@ -18,14 +18,14 @@ public class TestHistory(WebData dbContext) : PageModel
     /// <summary>
     /// A list of test run records retrieved from the database.
     /// </summary>
-    public List<TestRun> TestRuns { get; set; } = new();
+    public List<TestRun> TestRuns { get; set; } = [];
 
     /// <summary>
     /// Handles GET requests to retrieve and display the test run history.
     /// </summary>
     public async void OnGet()
     {
-        TestRuns = await dbContext.TestRuns
+        this.TestRuns = await dbContext.TestRuns
             .Include(tr => tr.TestClasses)
             .ThenInclude(tc => tc.TestDetails)
             .ToListAsync();
