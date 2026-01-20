@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KR3", "KR3\KR3.csproj", "{562343DC-0AEB-4308-B660-CCF08BA45276}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KR3.Tests", "KR3.Tests\KR3.Tests.csproj", "{D76B3400-B7E1-4AA9-8A69-70D4401734D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{562343DC-0AEB-4308-B660-CCF08BA45276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{562343DC-0AEB-4308-B660-CCF08BA45276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{562343DC-0AEB-4308-B660-CCF08BA45276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{562343DC-0AEB-4308-B660-CCF08BA45276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D76B3400-B7E1-4AA9-8A69-70D4401734D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D76B3400-B7E1-4AA9-8A69-70D4401734D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D76B3400-B7E1-4AA9-8A69-70D4401734D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D76B3400-B7E1-4AA9-8A69-70D4401734D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
